@@ -22,8 +22,3 @@ jobs:
           cd exampleSite
           hugo --verbose --baseURL= --themesDir=../../
 
-      - name: Archive Hugo example site
-        uses: actions/upload-artifact@v2
-        with:
-          name: hugo-example-site
-          path: exampleSite/public
