@@ -17,11 +17,21 @@ jobs:
           cd exampleSite
           hugo --verbose --baseURL= --themesDir=../../
 
+  check-flake:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v20
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+    - run: nix --extra-experimental-features "nix-command flakes" flake check
+
   ci-success:
     name: CI
     if: ${{ success() }}
     needs:
       - check
+      - check-flake
     runs-on: ubuntu-latest
     steps:
       - name: CI succeeded
