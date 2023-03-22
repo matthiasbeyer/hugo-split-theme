@@ -1,29 +1,28 @@
 name: CI
-'on':
+
+on:
   push:
-    branches:
-      - master
+    branches: [master, staging, trying]
   pull_request:
-    branches:
-      - master
+    branches: [master]
 jobs:
-  ci:
+  check:
     name: Build Hugo example site and archive output
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-
+      - uses: actions/checkout@v2
+      - uses: peaceiris/actions-hugo@v2
       - name: Build Hugo example site
         run: |
           cd exampleSite
           hugo --verbose --baseURL= --themesDir=../../
 
-      - name: Archive Hugo example site
-        uses: actions/upload-artifact@v2
-        with:
-          name: hugo-example-site
-          path: exampleSite/public
+  ci-success:
+    name: CI
+    if: ${{ success() }}
+    needs:
+      - check
+    runs-on: ubuntu-latest
+    steps:
+      - name: CI succeeded
+        run: exit 0
